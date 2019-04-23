@@ -1,0 +1,56 @@
+package com.lamtsing.utils.generator;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+
+/**
+ * @author Lamtsing
+ */
+public class ServiceGenerator extends AbstractGenerator {
+
+    private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%npublic interface %s {%n%n";
+
+    public ServiceGenerator(){
+        setSuffix("Service");
+    }
+
+    @Override
+    public void generator() {
+        Class entity = getEntity();
+        String packageName = getPackageName();
+        if (StringUtils.isBlank(packageName)) {
+            return;
+        }
+
+        String path = GeneratorUtils.getPath(packageName, getBasePath());
+
+        String className = buildClassName(entity);
+        File file = new File(path + "/" + className + ".java");
+        if (file.exists()){
+            return;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // 设置包名
+        appendPackage(stringBuilder);
+        // 设置类
+        String dto = GeneratorUtils.toDto(className);
+        stringBuilder.append(String.format(classTemplate,className));
+        // 保存
+        stringBuilder.append("\t")
+                .append(dto)
+                .append(" save(")
+                .append(dto)
+                .append(" ")
+                .append(GeneratorUtils.firstToLowerCase(dto))
+                .append("};\n\n");
+        // 获取一条数据
+        stringBuilder.append("\t")
+                .append(dto)
+                .append(" getOne(Long id);\n\n");
+        // 删除数据
+        stringBuilder.append("\tvoid delete(Long id);\n\n");
+        stringBuilder.append("}");
+    }
+}
