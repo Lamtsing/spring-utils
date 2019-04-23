@@ -26,6 +26,7 @@ public class ServiceGenerator extends AbstractGenerator {
         String path = GeneratorUtils.getPath(packageName, getBasePath());
 
         String className = buildClassName(entity);
+        String entityName = entity.getSimpleName();
         File file = new File(path + "/" + className + ".java");
         if (file.exists()){
             return;
@@ -35,8 +36,9 @@ public class ServiceGenerator extends AbstractGenerator {
         // 设置包名
         appendPackage(stringBuilder);
         // 设置类
-        String dto = GeneratorUtils.toDto(className);
         stringBuilder.append(String.format(classTemplate,className));
+        // 构造dto名字
+        String dto = GeneratorUtils.toDto(entityName);
         // 保存
         stringBuilder.append("\t")
                 .append(dto)
