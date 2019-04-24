@@ -46,13 +46,17 @@ public class ServiceGenerator extends AbstractGenerator {
                 .append(dto)
                 .append(" ")
                 .append(GeneratorUtils.firstToLowerCase(dto))
-                .append("};\n\n");
+                .append(");\n\n");
         // 获取一条数据
         stringBuilder.append("\t")
                 .append(dto)
-                .append(" getOne(Long id);\n\n");
+                .append(" getOne(")
+                .append(getIdType()[1])
+                .append(" id);\n\n");
         // 删除数据
-        stringBuilder.append("\tvoid delete(Long id);\n\n");
+        stringBuilder.append("\tvoid delete(")
+                .append(getIdType()[1])
+                .append(" id);\n\n");
         stringBuilder.append("}");
     }
 }
