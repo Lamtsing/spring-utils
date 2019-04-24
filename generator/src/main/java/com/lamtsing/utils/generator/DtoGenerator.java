@@ -15,7 +15,7 @@ public class DtoGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Data%npublic class %s {%n%n";
 
-    public DtoGenerator(){
+    public DtoGenerator() {
         setSuffix("Dto");
     }
 
@@ -31,7 +31,7 @@ public class DtoGenerator extends AbstractGenerator {
 
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
-        if (file.exists()){
+        if (file.exists()) {
             return;
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -41,14 +41,14 @@ public class DtoGenerator extends AbstractGenerator {
         // 设置引入
         Set<String> imports = new HashSet<>();
         imports.add(Data.class.getTypeName());
-        appendImport(stringBuilder,imports);
+        appendImport(stringBuilder, imports);
         // 设置类名
-        stringBuilder.append(String.format(classTemplate,className));
+        stringBuilder.append(String.format(classTemplate, className));
         // 生成属性
-        Field[] fields = entity.getFields();
+        Field[] fields = entity.getDeclaredFields();
         for (Field field : fields) {
             stringBuilder.append("\tprivate ")
-                    .append(field.getGenericType())
+                    .append(GeneratorUtils.getGenericTypeName(field))
                     .append(" ")
                     .append(field.getName())
                     .append(";\n\n");
@@ -56,6 +56,6 @@ public class DtoGenerator extends AbstractGenerator {
         stringBuilder.append("}");
 
         // 执行生成
-        GeneratorUtils.write(file,stringBuilder);
+        GeneratorUtils.write(file, stringBuilder);
     }
 }

@@ -19,6 +19,7 @@ public class Generator {
     private ServiceImplGenerator serviceImplGenerator; // serviceImpl生成器
     private ResourceGenerator resourceGenerator; // 控制器生成器
     private String entityPackage;
+    private String entityName;
     private String basePath;
 
     private boolean enableDto = false;
@@ -28,11 +29,11 @@ public class Generator {
     private boolean enableServiceImpl = false;
     private boolean enableResource = false;
 
-    public Generator(String entityPackage) {
-        this(entityPackage, "/src/main/java");
+    public Generator(String entityPackage, String entityName) {
+        this(entityPackage, entityName, "/src/main/java");
     }
 
-    public Generator(String entityPackage, String basePath) {
+    public Generator(String entityPackage, String entityName, String basePath) {
         this.dtoGenerator = new DtoGenerator();
         this.repositoryGenerator = new RepositoryGenerator();
         this.mapstructGenerator = new MapstructGenerator();
@@ -40,6 +41,7 @@ public class Generator {
         this.serviceImplGenerator = new ServiceImplGenerator();
         this.resourceGenerator = new ResourceGenerator();
         this.entityPackage = entityPackage;
+        this.entityName = entityName;
         this.basePath = basePath;
     }
 
@@ -99,7 +101,7 @@ public class Generator {
 
     public void generator() {
         String path = GeneratorUtils.getPath(entityPackage, basePath);
-        File file = new File(path);
+        File file = new File(path + "/" + entityName + ".java");
         if (!file.exists()) {
             return;
         }
@@ -110,7 +112,7 @@ public class Generator {
             clazz = Class.forName(entityPackage + "." + fileName);
             // 需要Entity注解
             Annotation annotation = clazz.getAnnotation(Entity.class);
-            if (!ObjectUtils.isEmpty(annotation)) {
+            if (annotation == null) {
                 return;
             }
         } catch (ClassNotFoundException e) {

@@ -66,14 +66,15 @@ public abstract class AbstractGenerator implements IGenerator {
     protected String[] getIdType(){
         boolean isIdPresent = false;
         String[] idType = new String[2];
-        Field[] fields = getEntity().getFields();
+        Field[] fields = getEntity().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Id.class)) {
                 isIdPresent = true;
-                if (Long.class.getTypeName().equals(field.getGenericType().toString())) {
+                String genericTypeName = GeneratorUtils.getGenericTypeName(field);
+                if ("Long".equals(genericTypeName)) {
                     idType[0] = field.getName();
                     idType[1] = "Long";
-                } else if (Integer.class.getTypeName().equals(field.getGenericType().toString())) {
+                } else if ("Integer".equals(genericTypeName)) {
                     idType[0] = field.getName();
                     idType[1] = "Integer";
                 }

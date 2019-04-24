@@ -3,6 +3,7 @@ package com.lamtsing.utils.generator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * @author Lamtsing
@@ -10,11 +11,8 @@ import java.io.IOException;
 public class GeneratorUtils {
 
     public static String getPath(String packageName, String basePath) {
-        String packagePath = packageName.replaceAll("\\.", "/");
-        String path = (Thread.currentThread().getContextClassLoader().getResource("") + "../../").replaceAll("file:/", "").replaceAll("%20", " ").trim();
-        if (path.indexOf(":") != 1) {
-            path = File.separator + path;
-        }
+        String packagePath = "/" + packageName.replaceAll("\\.", "/");
+        String path = (Thread.currentThread().getContextClassLoader().getResource("") + "../..").replaceAll("file:/", "").replaceAll("%20", " ").trim();
         return path + basePath + packagePath;
     }
 
@@ -26,12 +24,9 @@ public class GeneratorUtils {
         return String.valueOf(fieldName.charAt(0)).toLowerCase() + fieldName.substring(1);
     }
 
-    public static String toDto(String entityName) {
-        return entityName + "Dto";
-    }
-
-    public static String toEntity(String dtoName) {
-        return dtoName.substring(0, dtoName.length() - 3);
+    public static String getGenericTypeName(Field field) {
+        String typeName = field.getGenericType().getTypeName();
+        return typeName.substring(typeName.lastIndexOf(".") + 1);
     }
 
     public static void write(File file, StringBuilder stringBuilder) {
