@@ -26,23 +26,7 @@ public class RepositoryGenerator extends AbstractGenerator {
     public void generator() {
         Class entity = getEntity();
 
-        boolean isIdPresent = false;
-        String idType = "";
-        Field[] fields = entity.getFields();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(Id.class)) {
-                isIdPresent = true;
-                if (Long.class.getTypeName().equals(field.getGenericType().toString())) {
-                    idType = "Long";
-                } else if (Integer.class.getTypeName().equals(field.getGenericType().toString())) {
-                    idType = "Integer";
-                }
-                break;
-            }
-        }
-        if (!isIdPresent){
-            return;
-        }
+        String idType = getIdType()[1];
 
         String packageName = getPackageName();
         if (StringUtils.isBlank(packageName)) {
@@ -63,7 +47,8 @@ public class RepositoryGenerator extends AbstractGenerator {
         appendPackage(stringBuilder);
         // 设置引入
         Set<String> imports = new HashSet<>();
-        imports.add(entity.getTypeName()); // 实体类
+        // todo 需要实体类Generator的buildClassType
+        imports.add(packageName + entity.getSimpleName()); // 实体类
         imports.add(JpaRepository.class.getTypeName()); // JPA支持
         imports.add(JpaSpecificationExecutor.class.getTypeName()); // JPA复杂查询支持
         imports.add(Repository.class.getTypeName());

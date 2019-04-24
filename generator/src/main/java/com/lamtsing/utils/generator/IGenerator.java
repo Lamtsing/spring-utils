@@ -21,5 +21,5 @@ public interface IGenerator {
 
     String buildClassName(Class clazz);
 
-    String buildClassUrl(Class clazz);
+    String buildClassType(Class clazz);
 }

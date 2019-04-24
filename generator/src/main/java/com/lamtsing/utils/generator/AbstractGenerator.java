@@ -3,6 +3,7 @@ package com.lamtsing.utils.generator;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Id;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public abstract class AbstractGenerator implements IGenerator {
     }
 
     @Override
-    public String buildClassUrl(Class clazz) {
+    public String buildClassType(Class clazz) {
         return packageName + buildClassName(clazz);
     }
 
@@ -60,5 +61,25 @@ public abstract class AbstractGenerator implements IGenerator {
         }
         Field[] fields = new Field[list.size()];
         return list.toArray(fields);
+    }
+
+    protected String[] getIdType(){
+        boolean isIdPresent = false;
+        String[] idType = new String[2];
+        Field[] fields = getEntity().getFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Id.class)) {
+                isIdPresent = true;
+                if (Long.class.getTypeName().equals(field.getGenericType().toString())) {
+                    idType[0] = field.getName();
+                    idType[1] = "Long";
+                } else if (Integer.class.getTypeName().equals(field.getGenericType().toString())) {
+                    idType[0] = field.getName();
+                    idType[1] = "Integer";
+                }
+                break;
+            }
+        }
+        return idType;
     }
 }
