@@ -1,8 +1,9 @@
 package com.lamtsing.utils.generator;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -12,6 +13,8 @@ import java.util.Set;
 /**
  * @author Lamtsing
  */
+@Getter
+@Setter
 public class ResourceGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@RestController%n@RequestMapping(\"%s\")%n@Slf4j%npublic class %s {%n%n";
@@ -19,7 +22,7 @@ public class ResourceGenerator extends AbstractGenerator {
     private ServiceGenerator serviceGenerator;
     private DtoGenerator dtoGenerator;
 
-    public ResourceGenerator(){
+    public ResourceGenerator() {
         setSuffix("Resource");
     }
 
@@ -53,9 +56,9 @@ public class ResourceGenerator extends AbstractGenerator {
         imports.add(Slf4j.class.getTypeName());
         imports.add("org.springframework.web.bind.annotation.*");
         imports.add(Resource.class.getTypeName());
-        appendImport(stringBuilder,imports);
+        appendImport(stringBuilder, imports);
         // 设置包名
-        stringBuilder.append(String.format(classTemplate,GeneratorUtils.firstToLowerCase(className),className));
+        stringBuilder.append(String.format(classTemplate, GeneratorUtils.firstToLowerCase(className), className));
         // 设置属性
         stringBuilder.append("\t@Resource\n\tprivate ")
                 .append(service)
@@ -89,6 +92,9 @@ public class ResourceGenerator extends AbstractGenerator {
                 .append(serviceField)
                 .append(".deleteById(id);\n\t}\n\n");
         stringBuilder.append("}");
+
+        // 执行生成
+        GeneratorUtils.write(file, stringBuilder);
 
 
     }

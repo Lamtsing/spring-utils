@@ -1,6 +1,8 @@
 package com.lamtsing.utils.generator;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * @author Lamtsing
@@ -30,5 +32,16 @@ public class GeneratorUtils {
 
     public static String toEntity(String dtoName) {
         return dtoName.substring(0, dtoName.length() - 3);
+    }
+
+    public static void write(File file, StringBuilder stringBuilder) {
+        try {
+            file.getParentFile().mkdirs();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(stringBuilder.toString());
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.lamtsing.utils.generator;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,8 @@ import java.util.Set;
 /**
  * @author Lamtsing
  */
+@Getter
+@Setter
 public class ServiceImplGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Service%n@Transactional%npublic class %s implements %s {%n%n";
@@ -123,5 +127,8 @@ public class ServiceImplGenerator extends AbstractGenerator {
                 .append(repositoryField)
                 .append(".deleteById(id);\n\t}\n\n");
         stringBuilder.append("}");
+
+        // 执行生成
+        GeneratorUtils.write(file, stringBuilder);
     }
 }

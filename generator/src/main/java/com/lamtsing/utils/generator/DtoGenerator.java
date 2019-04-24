@@ -54,5 +54,8 @@ public class DtoGenerator extends AbstractGenerator {
                     .append(";\n\n");
         }
         stringBuilder.append("}");
+
+        // 执行生成
+        GeneratorUtils.write(file,stringBuilder);
     }
 }

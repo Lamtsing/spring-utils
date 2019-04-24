@@ -63,5 +63,8 @@ public class RepositoryGenerator extends AbstractGenerator {
                 .append(" id);")
                 .append("}");
 
+        // 执行生成
+        GeneratorUtils.write(file,stringBuilder);
+
     }
 }

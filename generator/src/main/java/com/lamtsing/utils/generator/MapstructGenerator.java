@@ -1,5 +1,7 @@
 package com.lamtsing.utils.generator;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 
@@ -10,6 +12,8 @@ import java.util.Set;
 /**
  * @author Lamtsing
  */
+@Getter
+@Setter
 public class MapstructGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Mapper(componentModel = \"spring\", uses = {})%npublic interface %s {%n%n";
@@ -68,5 +72,7 @@ public class MapstructGenerator extends AbstractGenerator {
                 .append(firstToLowerCase)
                 .append(";\n\t}\n}");
 
+        // 执行生成
+        GeneratorUtils.write(file, stringBuilder);
     }
 }

@@ -1,5 +1,7 @@
 package com.lamtsing.utils.generator;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -7,11 +9,15 @@ import java.io.File;
 /**
  * @author Lamtsing
  */
+@Getter
+@Setter
 public class ServiceGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%npublic interface %s {%n%n";
 
-    public ServiceGenerator(){
+    private DtoGenerator dtoGenerator;
+
+    public ServiceGenerator() {
         setSuffix("Service");
     }
 
@@ -28,7 +34,7 @@ public class ServiceGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         String entityName = entity.getSimpleName();
         File file = new File(path + "/" + className + ".java");
-        if (file.exists()){
+        if (file.exists()) {
             return;
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -36,9 +42,9 @@ public class ServiceGenerator extends AbstractGenerator {
         // 设置包名
         appendPackage(stringBuilder);
         // 设置类
-        stringBuilder.append(String.format(classTemplate,className));
+        stringBuilder.append(String.format(classTemplate, className));
         // 构造dto名字
-        String dto = GeneratorUtils.toDto(entityName);
+        String dto = dtoGenerator.buildClassName(entity);
         // 保存
         stringBuilder.append("\t")
                 .append(dto)
@@ -58,5 +64,8 @@ public class ServiceGenerator extends AbstractGenerator {
                 .append(getIdType()[1])
                 .append(" id);\n\n");
         stringBuilder.append("}");
+
+        // 执行生成
+        GeneratorUtils.write(file, stringBuilder);
     }
 }
