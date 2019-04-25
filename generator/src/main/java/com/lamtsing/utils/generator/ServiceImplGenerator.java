@@ -20,6 +20,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Service%n@Transactional%npublic class %s implements %s {%n%n";
 
+    private EntityGenerator entityGenerator;
     private DtoGenerator dtoGenerator;
     private MapstructGenerator mapstructGenerator;
     private RepositoryGenerator repositoryGenerator;
@@ -42,7 +43,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            return;
+            file.delete();
         }
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -51,7 +52,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
         // 设置引入
         String repository = repositoryGenerator.buildClassName(entity);
         String mapstruct = mapstructGenerator.buildClassName(entity);
-        String dto = dtoGenerator.buildClassType(entity);
+        String dto = dtoGenerator.buildClassName(entity);
         String entitySimpleName = entity.getSimpleName();
         String entityField = GeneratorUtils.firstToLowerCase(entitySimpleName);
         String dtoField = GeneratorUtils.firstToLowerCase(dto);
@@ -59,10 +60,10 @@ public class ServiceImplGenerator extends AbstractGenerator {
         String mapstructField = GeneratorUtils.firstToLowerCase(mapstruct);
         Set<String> imports = new HashSet<>();
         imports.add(dtoGenerator.buildClassType(entity));
-        imports.add(packageName + entitySimpleName);
+        imports.add(entityGenerator.buildClassType(entity));
         imports.add(mapstructGenerator.buildClassType(entity));
         imports.add(repositoryGenerator.buildClassType(entity));
-        imports.add(serviceGenerator.buildClassName(entity));
+        imports.add(serviceGenerator.buildClassType(entity));
         imports.add(Service.class.getTypeName());
         imports.add(Transactional.class.getTypeName());
         imports.add(Resource.class.getTypeName());
@@ -70,13 +71,13 @@ public class ServiceImplGenerator extends AbstractGenerator {
         // 设置类名
         stringBuilder.append(String.format(classTemplate, className, serviceGenerator.buildClassName(entity)));
         // 设置dao
-        stringBuilder.append("\t@Resource\n\tprivate")
+        stringBuilder.append("\t@Resource\n\tprivate ")
                 .append(repository)
                 .append(" ")
                 .append(repositoryField)
                 .append(";\n\n");
         // 设置mapstruct
-        stringBuilder.append("\t@Resource\n\tprivate")
+        stringBuilder.append("\t@Resource\n\tprivate ")
                 .append(mapstruct)
                 .append(" ")
                 .append(mapstructField)
@@ -112,6 +113,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
                 .append(getIdType()[1])
                 .append(" id) {\n\t\t")
                 .append(entity.getSimpleName())
+                .append(" ")
                 .append(entityField)
                 .append(" = ")
                 .append(repositoryField)
@@ -130,5 +132,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
 
         // 执行生成
         GeneratorUtils.write(file, stringBuilder);
+
+        System.out.println("ServiceImpl: [" + className + "] generator success!");
     }
 }

@@ -46,7 +46,7 @@ public abstract class AbstractGenerator implements IGenerator {
 
     @Override
     public String buildClassType(Class clazz) {
-        return packageName + buildClassName(clazz);
+        return packageName + "." + buildClassName(clazz);
     }
 
     public Field[] getAllField(Class clazz) {
@@ -63,7 +63,7 @@ public abstract class AbstractGenerator implements IGenerator {
         return list.toArray(fields);
     }
 
-    protected String[] getIdType(){
+    protected String[] getIdType() {
         boolean isIdPresent = false;
         String[] idType = new String[2];
         Field[] fields = getEntity().getDeclaredFields();

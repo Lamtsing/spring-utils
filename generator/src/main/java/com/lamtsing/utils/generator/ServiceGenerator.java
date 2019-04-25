@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Lamtsing
@@ -35,12 +37,15 @@ public class ServiceGenerator extends AbstractGenerator {
         String entityName = entity.getSimpleName();
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            return;
+            file.delete();
         }
         StringBuilder stringBuilder = new StringBuilder();
 
         // 设置包名
         appendPackage(stringBuilder);
+        Set<String> imports = new HashSet<>();
+        imports.add(dtoGenerator.buildClassType(entity));
+        appendImport(stringBuilder, imports);
         // 设置类
         stringBuilder.append(String.format(classTemplate, className));
         // 构造dto名字
@@ -67,5 +72,7 @@ public class ServiceGenerator extends AbstractGenerator {
 
         // 执行生成
         GeneratorUtils.write(file, stringBuilder);
+
+        System.out.println("IService: [" + className + "] generator success!");
     }
 }

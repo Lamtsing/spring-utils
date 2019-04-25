@@ -1,7 +1,6 @@
 package com.lamtsing.utils.generator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.Entity;
 import java.io.File;
@@ -12,12 +11,13 @@ import java.lang.annotation.Annotation;
  */
 public class Generator {
 
+    private EntityGenerator entityGenerator; // 实体类
     private DtoGenerator dtoGenerator; // dto生成器
     private RepositoryGenerator repositoryGenerator; // dao生成器
     private MapstructGenerator mapstructGenerator; // mapstruct生成器
     private ServiceGenerator serviceGenerator; // service接口生成器
     private ServiceImplGenerator serviceImplGenerator; // serviceImpl生成器
-    private ResourceGenerator resourceGenerator; // 控制器生成器
+    private ControllerGenerator ControllerGenerator; // 控制器生成器
     private String entityPackage;
     private String entityName;
     private String basePath;
@@ -34,15 +34,19 @@ public class Generator {
     }
 
     public Generator(String entityPackage, String entityName, String basePath) {
+        this.entityGenerator = new EntityGenerator();
         this.dtoGenerator = new DtoGenerator();
         this.repositoryGenerator = new RepositoryGenerator();
         this.mapstructGenerator = new MapstructGenerator();
         this.serviceGenerator = new ServiceGenerator();
         this.serviceImplGenerator = new ServiceImplGenerator();
-        this.resourceGenerator = new ResourceGenerator();
+        this.ControllerGenerator = new ControllerGenerator();
         this.entityPackage = entityPackage;
         this.entityName = entityName;
         this.basePath = basePath;
+
+        entityGenerator.setBasePath(basePath);
+        entityGenerator.setPackageName(entityPackage);
     }
 
     public void setDtoInit(String packageName, String basePath) {
@@ -95,8 +99,8 @@ public class Generator {
             basePath = this.basePath;
         }
         enableResource = true;
-        resourceGenerator.setPackageName(packageName);
-        resourceGenerator.setBasePath(basePath);
+        ControllerGenerator.setPackageName(packageName);
+        ControllerGenerator.setBasePath(basePath);
     }
 
     public void generator() {
@@ -124,20 +128,24 @@ public class Generator {
         mapstructGenerator.setEntity(clazz);
         serviceGenerator.setEntity(clazz);
         serviceImplGenerator.setEntity(clazz);
-        resourceGenerator.setEntity(clazz);
+        ControllerGenerator.setEntity(clazz);
 
         // 设置属性
         mapstructGenerator.setDtoGenerator(dtoGenerator);
+        mapstructGenerator.setEntityGenerator(entityGenerator);
 
         serviceGenerator.setDtoGenerator(dtoGenerator);
 
+        repositoryGenerator.setEntityGenerator(entityGenerator);
+
+        serviceImplGenerator.setEntityGenerator(entityGenerator);
         serviceImplGenerator.setDtoGenerator(dtoGenerator);
         serviceImplGenerator.setMapstructGenerator(mapstructGenerator);
         serviceImplGenerator.setRepositoryGenerator(repositoryGenerator);
         serviceImplGenerator.setServiceGenerator(serviceGenerator);
 
-        resourceGenerator.setServiceGenerator(serviceGenerator);
-        resourceGenerator.setDtoGenerator(dtoGenerator);
+        ControllerGenerator.setServiceGenerator(serviceGenerator);
+        ControllerGenerator.setDtoGenerator(dtoGenerator);
 
         // 执行生成
         if (enableDto)
@@ -151,6 +159,6 @@ public class Generator {
         if (enableServiceImpl)
             serviceImplGenerator.generator();
         if (enableResource)
-            resourceGenerator.generator();
+            ControllerGenerator.generator();
     }
 }

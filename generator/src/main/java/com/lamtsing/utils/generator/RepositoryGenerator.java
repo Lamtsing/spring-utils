@@ -1,5 +1,7 @@
 package com.lamtsing.utils.generator;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -14,9 +16,13 @@ import java.util.Set;
 /**
  * @author Lamtsing
  */
+@Getter
+@Setter
 public class RepositoryGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Repository%npublic interface %s extends JpaRepository<%s, %s>, JpaSpecificationExecutor<%s> {%n%n";
+
+    private EntityGenerator entityGenerator;
 
     public RepositoryGenerator() {
         setSuffix("Repository");
@@ -39,7 +45,7 @@ public class RepositoryGenerator extends AbstractGenerator {
         String entityName = entity.getSimpleName();
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            return;
+            file.delete();
         }
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -48,7 +54,7 @@ public class RepositoryGenerator extends AbstractGenerator {
         // 设置引入
         Set<String> imports = new HashSet<>();
         // todo 需要实体类Generator的buildClassType
-        imports.add(packageName + entity.getSimpleName()); // 实体类
+        imports.add(entityGenerator.buildClassType(entity)); // 实体类
         imports.add(JpaRepository.class.getTypeName()); // JPA支持
         imports.add(JpaSpecificationExecutor.class.getTypeName()); // JPA复杂查询支持
         imports.add(Repository.class.getTypeName());
@@ -65,6 +71,8 @@ public class RepositoryGenerator extends AbstractGenerator {
 
         // 执行生成
         GeneratorUtils.write(file,stringBuilder);
+
+        System.out.println("Repository: [" + className + "] generator success!");
 
     }
 }

@@ -32,7 +32,7 @@ public class DtoGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            return;
+            file.delete();
         }
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -57,5 +57,7 @@ public class DtoGenerator extends AbstractGenerator {
 
         // 执行生成
         GeneratorUtils.write(file, stringBuilder);
+
+        System.out.println("Dto: [" + className + "] generator success!");
     }
 }

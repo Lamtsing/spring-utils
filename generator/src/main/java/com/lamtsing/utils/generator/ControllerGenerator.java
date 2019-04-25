@@ -15,15 +15,15 @@ import java.util.Set;
  */
 @Getter
 @Setter
-public class ResourceGenerator extends AbstractGenerator {
+public class ControllerGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@RestController%n@RequestMapping(\"%s\")%n@Slf4j%npublic class %s {%n%n";
 
     private ServiceGenerator serviceGenerator;
     private DtoGenerator dtoGenerator;
 
-    public ResourceGenerator() {
-        setSuffix("Resource");
+    public ControllerGenerator() {
+        setSuffix("Controller");
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ResourceGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            return;
+            file.delete();
         }
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -90,12 +90,12 @@ public class ResourceGenerator extends AbstractGenerator {
                 .append(getIdType()[1])
                 .append(" id) {\n\t\t")
                 .append(serviceField)
-                .append(".deleteById(id);\n\t}\n\n");
+                .append(".delete(id);\n\t}\n\n");
         stringBuilder.append("}");
 
         // 执行生成
         GeneratorUtils.write(file, stringBuilder);
 
-
+        System.out.println("Controller: [" + className + "] generator success!");
     }
 }
