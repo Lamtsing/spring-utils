@@ -39,7 +39,8 @@ public class MapstructGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            file.delete();
+            System.err.println("Mapstruct: [" + className + "] generator faild! because this file exists!");
+            return;
         }
         StringBuilder stringBuilder = new StringBuilder();
 

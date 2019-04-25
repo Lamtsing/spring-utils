@@ -39,7 +39,8 @@ public class ControllerGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            file.delete();
+            System.err.println("Controller: [" + className + "] generator faild! because this file exists!");
+            return;
         }
         StringBuilder stringBuilder = new StringBuilder();
 

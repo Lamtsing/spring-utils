@@ -43,7 +43,8 @@ public class ServiceImplGenerator extends AbstractGenerator {
         String className = buildClassName(entity);
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            file.delete();
+            System.err.println("ServiceImpl: [" + className + "] generator faild! because this file exists!");
+            return;
         }
         StringBuilder stringBuilder = new StringBuilder();
 

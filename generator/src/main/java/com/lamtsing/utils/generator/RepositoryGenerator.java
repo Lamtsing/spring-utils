@@ -45,7 +45,8 @@ public class RepositoryGenerator extends AbstractGenerator {
         String entityName = entity.getSimpleName();
         File file = new File(path + "/" + className + ".java");
         if (file.exists()) {
-            file.delete();
+            System.err.println("Repository: [" + className + "] generator faild! because this file exists!");
+            return;
         }
         StringBuilder stringBuilder = new StringBuilder();
 
