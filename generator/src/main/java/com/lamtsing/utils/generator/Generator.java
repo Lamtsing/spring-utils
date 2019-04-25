@@ -94,7 +94,7 @@ public class Generator {
         serviceImplGenerator.setBasePath(basePath);
     }
 
-    public void setResourceInit(String packageName, String basePath) {
+    public void setControllerInit(String packageName, String basePath) {
         if (StringUtils.isBlank(basePath)) {
             basePath = this.basePath;
         }
