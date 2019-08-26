@@ -1,5 +1,6 @@
 package com.lamtsing.utils.generator;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,7 +69,7 @@ public abstract class AbstractGenerator implements IGenerator {
         String[] idType = new String[2];
         Field[] fields = getEntity().getDeclaredFields();
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Id.class)) {
+            if (field.isAnnotationPresent(TableId.class)) {
                 isIdPresent = true;
                 String genericTypeName = GeneratorUtils.getGenericTypeName(field);
                 if ("Long".equals(genericTypeName)) {

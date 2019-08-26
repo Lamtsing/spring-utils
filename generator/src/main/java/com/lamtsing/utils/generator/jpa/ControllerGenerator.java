@@ -1,5 +1,7 @@
-package com.lamtsing.utils.generator;
+package com.lamtsing.utils.generator.jpa;
 
+import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

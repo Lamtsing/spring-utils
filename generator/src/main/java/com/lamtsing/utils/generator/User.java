@@ -1,5 +1,6 @@
 package com.lamtsing.utils.generator;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +10,11 @@ import javax.persistence.Id;
 /**
  * @author Lamtsing
  */
-@Entity
 @Getter
 @Setter
 public class User {
 
-    @Id
+    @TableId
     private Long id;
 
     private String userName;

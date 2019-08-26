@@ -1,5 +1,8 @@
-package com.lamtsing.utils.generator;
+package com.lamtsing.utils.generator.jpa;
 
+import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.GeneratorUtils;
+import com.lamtsing.utils.generator.EntityGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -7,9 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Id;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 

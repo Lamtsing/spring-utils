@@ -1,5 +1,8 @@
-package com.lamtsing.utils.generator;
+package com.lamtsing.utils.generator.mybatis;
 
+import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.EntityGenerator;
+import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -21,14 +24,8 @@ public class ServiceImplGenerator extends AbstractGenerator {
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Service%n@Transactional%npublic class %s implements %s {%n%n";
 
     private EntityGenerator entityGenerator;
-    private DtoGenerator dtoGenerator;
-    private MapstructGenerator mapstructGenerator;
-    private RepositoryGenerator repositoryGenerator;
+    private MapperGenerator mapperGenerator;
     private ServiceGenerator serviceGenerator;
-
-    public ServiceImplGenerator() {
-        setSuffix("ServiceImpl");
-    }
 
     @Override
     public void generator() {
@@ -51,19 +48,13 @@ public class ServiceImplGenerator extends AbstractGenerator {
         // 设置包名
         appendPackage(stringBuilder);
         // 设置引入
-        String repository = repositoryGenerator.buildClassName(entity);
-        String mapstruct = mapstructGenerator.buildClassName(entity);
-        String dto = dtoGenerator.buildClassName(entity);
+        String repository = mapperGenerator.buildClassName(entity);
         String entitySimpleName = entity.getSimpleName();
         String entityField = GeneratorUtils.firstToLowerCase(entitySimpleName);
-        String dtoField = GeneratorUtils.firstToLowerCase(dto);
         String repositoryField = GeneratorUtils.firstToLowerCase(repository);
-        String mapstructField = GeneratorUtils.firstToLowerCase(mapstruct);
         Set<String> imports = new HashSet<>();
-        imports.add(dtoGenerator.buildClassType(entity));
         imports.add(entityGenerator.buildClassType(entity));
-        imports.add(mapstructGenerator.buildClassType(entity));
-        imports.add(repositoryGenerator.buildClassType(entity));
+        imports.add(mapperGenerator.buildClassType(entity));
         imports.add(serviceGenerator.buildClassType(entity));
         imports.add(Service.class.getTypeName());
         imports.add(Transactional.class.getTypeName());
@@ -77,52 +68,34 @@ public class ServiceImplGenerator extends AbstractGenerator {
                 .append(" ")
                 .append(repositoryField)
                 .append(";\n\n");
-        // 设置mapstruct
-        stringBuilder.append("\t@Resource\n\tprivate ")
-                .append(mapstruct)
-                .append(" ")
-                .append(mapstructField)
-                .append(";\n\n");
         // 保存
         stringBuilder.append("\t@Override\n\tpublic ")
-                .append(dto)
+                .append(entitySimpleName)
                 .append(" save(")
-                .append(dto)
+                .append(entitySimpleName)
                 .append(" ")
-                .append(dtoField)
+                .append(entityField)
                 .append(") {\n\t\t")
+                .append(repositoryField)
+                .append(".insert(")
+                .append(entityField)
+                .append(");\n\t\treturn ")
+                .append(entityField)
+                .append(";\n\t}\n\n");
+        // 获取一条数据
+        stringBuilder.append("\t@Override\n\tpublic ")
+                .append(entitySimpleName)
+                .append(" getOne(")
+                .append(getIdType()[1])
+                .append(" id) {\n\t\t")
                 .append(entitySimpleName)
                 .append(" ")
                 .append(entityField)
                 .append(" = ")
-                .append(mapstructField)
-                .append(".toEntity(")
-                .append(dtoField)
-                .append(");\n\t\t")
                 .append(repositoryField)
-                .append(".save(")
+                .append(".selectById(id);\n\t\treturn ")
                 .append(entityField)
-                .append(");\n\t\treturn ")
-                .append(mapstructField)
-                .append(".toDto(")
-                .append(entityField)
-                .append(");\n\t}\n\n");
-        // 获取一条数据
-        stringBuilder.append("\t@Override\n\tpublic ")
-                .append(dto)
-                .append(" getOne(")
-                .append(getIdType()[1])
-                .append(" id) {\n\t\t")
-                .append(entity.getSimpleName())
-                .append(" ")
-                .append(entityField)
-                .append(" = ")
-                .append(repositoryField)
-                .append(".findOneById(id);\n\t\treturn ")
-                .append(mapstructField)
-                .append(".toDto(")
-                .append(entityField)
-                .append(");\n\t}\n\n");
+                .append(";\n\t}\n\n");
         // 删除数据
         stringBuilder.append("\t@Override\n\tpublic void delete(")
                 .append(getIdType()[1])

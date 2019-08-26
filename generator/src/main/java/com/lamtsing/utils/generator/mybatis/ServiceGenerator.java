@@ -1,5 +1,8 @@
-package com.lamtsing.utils.generator;
+package com.lamtsing.utils.generator.mybatis;
 
+import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.EntityGenerator;
+import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +20,7 @@ public class ServiceGenerator extends AbstractGenerator {
 
     private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%npublic interface %s {%n%n";
 
-    private DtoGenerator dtoGenerator;
-
-    public ServiceGenerator() {
-        setSuffix("Service");
-    }
+    private EntityGenerator entityGenerator;
 
     @Override
     public void generator() {
@@ -45,23 +44,21 @@ public class ServiceGenerator extends AbstractGenerator {
         // 设置包名
         appendPackage(stringBuilder);
         Set<String> imports = new HashSet<>();
-        imports.add(dtoGenerator.buildClassType(entity));
+        imports.add(entityGenerator.buildClassType(entity));
         appendImport(stringBuilder, imports);
         // 设置类
         stringBuilder.append(String.format(classTemplate, className));
-        // 构造dto名字
-        String dto = dtoGenerator.buildClassName(entity);
         // 保存
         stringBuilder.append("\t")
-                .append(dto)
+                .append(entityName)
                 .append(" save(")
-                .append(dto)
+                .append(entityName)
                 .append(" ")
-                .append(GeneratorUtils.firstToLowerCase(dto))
+                .append(GeneratorUtils.firstToLowerCase(entityName))
                 .append(");\n\n");
         // 获取一条数据
         stringBuilder.append("\t")
-                .append(dto)
+                .append(entityName)
                 .append(" getOne(")
                 .append(getIdType()[1])
                 .append(" id);\n\n");

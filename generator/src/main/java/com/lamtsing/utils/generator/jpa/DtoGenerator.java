@@ -1,5 +1,7 @@
-package com.lamtsing.utils.generator;
+package com.lamtsing.utils.generator.jpa;
 
+import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 

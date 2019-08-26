@@ -1,22 +1,18 @@
-import com.lamtsing.utils.generator.jpa.Generator;
+import com.lamtsing.utils.generator.mybatis.Generator;
 
 /**
  * @author Lamtsing
  */
-public class test {
+public class MyBatisPlusTest {
 
     public static void main(String[] args) {
         // 初始化生成器
         Generator generator = new Generator("com.lamtsing.utils.generator","User");
 
-        // 初始化dto生成器
-        generator.setDtoInit("com.lamtsing.utils.generator.mapstruct",null);
-        // 初始化mapstruct生成器
-        generator.setMapstructInit("com.lamtsing.utils.generator.mapstruct", null);
         // 初始化dao生成器
-        generator.setRepositoryInit("com.lamtsing.utils.generator.mapstruct", null);
+        generator.setMapperInit("com.lamtsing.utils.generator.mapstruct", null);
         // 初始化控制层生成器
-        generator.setControllerInit("com.lamtsing.utils.generator.mapstruct", null);
+        generator.setResourceInit("com.lamtsing.utils.generator.mapstruct", null);
         // 初始化service接口生成器
         generator.setServiceInit("com.lamtsing.utils.generator.mapstruct", null);
         // 初始化service实现类生成器
