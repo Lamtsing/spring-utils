@@ -1,6 +1,7 @@
 package com.lamtsing.utils.generator.mybatis;
 
 import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.Constant;
 import com.lamtsing.utils.generator.EntityGenerator;
 import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
@@ -20,9 +21,10 @@ import java.util.Set;
 @Setter
 public class ResourceGenerator extends AbstractGenerator {
 
-    private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@RestController%n@RequestMapping(\"%s\")%n@Slf4j%npublic class %s {%n%n";
+    private String classTemplate = "/**%n * @author %s%n */%n@RestController%n@RequestMapping(\"%s\")%n@Slf4j%npublic class %s {%n%n";
 
     private ServiceGenerator serviceGenerator;
+    private ServiceImplGenerator serviceImplGenerator;
     private EntityGenerator entityGenerator;
 
     @Override
@@ -51,6 +53,7 @@ public class ResourceGenerator extends AbstractGenerator {
         String entityField = GeneratorUtils.firstToLowerCase(entityName);
         String service = serviceGenerator.buildClassName(entity);
         String serviceField = GeneratorUtils.firstToLowerCase(service);
+        String serviceImplField = GeneratorUtils.firstToLowerCase(serviceImplGenerator.buildClassName(entity));
         imports.add(entityGenerator.buildClassType(entity));
         imports.add(serviceGenerator.buildClassType(entity));
         imports.add(Slf4j.class.getTypeName());
@@ -58,39 +61,39 @@ public class ResourceGenerator extends AbstractGenerator {
         imports.add(Resource.class.getTypeName());
         appendImport(stringBuilder, imports);
         // 设置包名
-        stringBuilder.append(String.format(classTemplate, GeneratorUtils.firstToLowerCase(className), className));
+        stringBuilder.append(String.format(classTemplate, Constant.AUTHOR, GeneratorUtils.firstToLowerCase(className), className));
         // 设置属性
         stringBuilder.append("\t@Resource\n\tprivate ")
                 .append(service)
                 .append(" ")
-                .append(serviceField)
+                .append(serviceImplField)
                 .append(";\n\n");
         // 保存
         stringBuilder.append("\t@PostMapping(\"/save\")\n\tpublic ")
                 .append(entityName)
-                .append(" save(")
+                .append(" insert(")
                 .append(entityName)
                 .append(" ")
                 .append(entityField)
                 .append(") {\n\t\treturn ")
-                .append(serviceField)
-                .append(".save(")
+                .append(serviceImplField)
+                .append(".insert(")
                 .append(entityField)
                 .append(");\n\t}\n\n");
         // 获取一条数据
         stringBuilder.append("\t@GetMapping(\"/getOne\")\n\tpublic ")
                 .append(entityName)
-                .append(" getOne(")
+                .append(" selectById(")
                 .append(getIdType()[1])
                 .append(" id) {\n\t\treturn ")
-                .append(serviceField)
-                .append(".getOne(id);\n\t}\n\n");
+                .append(serviceImplField)
+                .append(".selectById(id);\n\t}\n\n");
         // 删除一条数据
         stringBuilder.append("\t@DeleteMapping(\"/delete\")\n\tpublic void deleteById(")
                 .append(getIdType()[1])
                 .append(" id) {\n\t\t")
-                .append(serviceField)
-                .append(".delete(id);\n\t}\n\n");
+                .append(serviceImplField)
+                .append(".deleteById(id);\n\t}\n\n");
         stringBuilder.append("}");
 
         // 执行生成

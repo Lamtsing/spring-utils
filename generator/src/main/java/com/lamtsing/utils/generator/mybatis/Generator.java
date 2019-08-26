@@ -1,5 +1,6 @@
 package com.lamtsing.utils.generator.mybatis;
 
+import com.lamtsing.utils.generator.Constant;
 import com.lamtsing.utils.generator.EntityGenerator;
 import com.lamtsing.utils.generator.GeneratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,7 @@ public class Generator {
     private MapperGenerator mapperGenerator; // dao生成器
     private ServiceGenerator serviceGenerator; // service接口生成器
     private ServiceImplGenerator serviceImplGenerator; // serviceImpl生成器
-    private ResourceGenerator ResourceGenerator; // 控制器生成器
+    private ResourceGenerator resourceGenerator; // 控制器生成器
     private String entityPackage;
     private String entityName;
     private String basePath;
@@ -34,13 +35,17 @@ public class Generator {
         this.mapperGenerator = new MapperGenerator();
         this.serviceGenerator = new ServiceGenerator();
         this.serviceImplGenerator = new ServiceImplGenerator();
-        this.ResourceGenerator = new ResourceGenerator();
+        this.resourceGenerator = new ResourceGenerator();
         this.entityPackage = entityPackage;
         this.entityName = entityName;
         this.basePath = basePath;
 
         entityGenerator.setBasePath(basePath);
         entityGenerator.setPackageName(entityPackage);
+    }
+
+    public void setAuthor(String author){
+        Constant.AUTHOR = author;
     }
 
     public void setMapperInit(String packageName, String basePath) {
@@ -66,7 +71,7 @@ public class Generator {
             basePath = this.basePath;
         }
         enableServiceImpl = true;
-        setServiceImplInit(packageName,basePath,"","Impl");
+        setServiceImplInit(packageName,basePath,"","ServiceImpl");
 
     }
 
@@ -117,10 +122,10 @@ public class Generator {
             basePath = this.basePath;
         }
         enableResource = true;
-        ResourceGenerator.setPackageName(packageName);
-        ResourceGenerator.setBasePath(basePath);
-        ResourceGenerator.setPrefix(pre);
-        ResourceGenerator.setSuffix(suf);
+        resourceGenerator.setPackageName(packageName);
+        resourceGenerator.setBasePath(basePath);
+        resourceGenerator.setPrefix(pre);
+        resourceGenerator.setSuffix(suf);
     }
 
     public void generator() {
@@ -141,7 +146,7 @@ public class Generator {
         mapperGenerator.setEntity(clazz);
         serviceGenerator.setEntity(clazz);
         serviceImplGenerator.setEntity(clazz);
-        ResourceGenerator.setEntity(clazz);
+        resourceGenerator.setEntity(clazz);
 
         // 设置属性
 
@@ -153,8 +158,9 @@ public class Generator {
         serviceImplGenerator.setMapperGenerator(mapperGenerator);
         serviceImplGenerator.setServiceGenerator(serviceGenerator);
 
-        ResourceGenerator.setServiceGenerator(serviceGenerator);
-        ResourceGenerator.setEntityGenerator(entityGenerator);
+        resourceGenerator.setServiceGenerator(serviceGenerator);
+        resourceGenerator.setServiceImplGenerator(serviceImplGenerator);
+        resourceGenerator.setEntityGenerator(entityGenerator);
 
         // 执行生成
         if (enableRepository)
@@ -164,6 +170,6 @@ public class Generator {
         if (enableServiceImpl)
             serviceImplGenerator.generator();
         if (enableResource)
-            ResourceGenerator.generator();
+            resourceGenerator.generator();
     }
 }

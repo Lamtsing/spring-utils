@@ -1,6 +1,8 @@
 package com.lamtsing.utils.generator.mybatis;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.Constant;
 import com.lamtsing.utils.generator.EntityGenerator;
 import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
@@ -19,7 +21,7 @@ import java.util.Set;
 @Setter
 public class MapperGenerator extends AbstractGenerator {
 
-    private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Repository%npublic interface %s extends BaseMapper<%s> {%n%n";
+    private String classTemplate = "/**%n * @author %s%n */%n@Repository%npublic interface %s extends BaseMapper<%s> {%n%n";
 
     private EntityGenerator entityGenerator;
 
@@ -50,11 +52,11 @@ public class MapperGenerator extends AbstractGenerator {
         // 设置引入
         Set<String> imports = new HashSet<>();
         imports.add(entityGenerator.buildClassType(entity)); // 实体类
-        imports.add("com.baomidou.mybatisplus.core.mapper.BaseMapper");
+        imports.add(BaseMapper.class.getTypeName());
         imports.add(Repository.class.getTypeName());
         appendImport(stringBuilder, imports);
         // 设置类
-        stringBuilder.append(String.format(classTemplate, className, entityName));
+        stringBuilder.append(String.format(classTemplate, Constant.AUTHOR, className, entityName));
         // 根据id找实体类
         stringBuilder.append("}");
 

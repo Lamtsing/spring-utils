@@ -1,6 +1,7 @@
 package com.lamtsing.utils.generator.mybatis;
 
 import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.Constant;
 import com.lamtsing.utils.generator.EntityGenerator;
 import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Setter
 public class ServiceImplGenerator extends AbstractGenerator {
 
-    private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%n@Service%n@Transactional%npublic class %s implements %s {%n%n";
+    private String classTemplate = "/**%n * @author %s%n */%n@Service%n@Transactional%npublic class %s implements %s {%n%n";
 
     private EntityGenerator entityGenerator;
     private MapperGenerator mapperGenerator;
@@ -61,7 +62,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
         imports.add(Resource.class.getTypeName());
         appendImport(stringBuilder, imports);
         // 设置类名
-        stringBuilder.append(String.format(classTemplate, className, serviceGenerator.buildClassName(entity)));
+        stringBuilder.append(String.format(classTemplate, Constant.AUTHOR, className, serviceGenerator.buildClassName(entity)));
         // 设置dao
         stringBuilder.append("\t@Resource\n\tprivate ")
                 .append(repository)
@@ -71,7 +72,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
         // 保存
         stringBuilder.append("\t@Override\n\tpublic ")
                 .append(entitySimpleName)
-                .append(" save(")
+                .append(" insert(")
                 .append(entitySimpleName)
                 .append(" ")
                 .append(entityField)
@@ -85,7 +86,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
         // 获取一条数据
         stringBuilder.append("\t@Override\n\tpublic ")
                 .append(entitySimpleName)
-                .append(" getOne(")
+                .append(" selectById(")
                 .append(getIdType()[1])
                 .append(" id) {\n\t\t")
                 .append(entitySimpleName)
@@ -97,7 +98,7 @@ public class ServiceImplGenerator extends AbstractGenerator {
                 .append(entityField)
                 .append(";\n\t}\n\n");
         // 删除数据
-        stringBuilder.append("\t@Override\n\tpublic void delete(")
+        stringBuilder.append("\t@Override\n\tpublic void deleteById(")
                 .append(getIdType()[1])
                 .append(" id) {\n\t\t")
                 .append(repositoryField)

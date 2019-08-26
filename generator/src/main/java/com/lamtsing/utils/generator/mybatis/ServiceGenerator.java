@@ -1,6 +1,7 @@
 package com.lamtsing.utils.generator.mybatis;
 
 import com.lamtsing.utils.generator.AbstractGenerator;
+import com.lamtsing.utils.generator.Constant;
 import com.lamtsing.utils.generator.EntityGenerator;
 import com.lamtsing.utils.generator.GeneratorUtils;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.Set;
 @Setter
 public class ServiceGenerator extends AbstractGenerator {
 
-    private String classTemplate = "/**%n * @author Lamtsing-Generator%n */%npublic interface %s {%n%n";
+    private String classTemplate = "/**%n * @author %s%n */%npublic interface %s {%n%n";
 
     private EntityGenerator entityGenerator;
 
@@ -47,11 +48,11 @@ public class ServiceGenerator extends AbstractGenerator {
         imports.add(entityGenerator.buildClassType(entity));
         appendImport(stringBuilder, imports);
         // 设置类
-        stringBuilder.append(String.format(classTemplate, className));
+        stringBuilder.append(String.format(classTemplate, Constant.AUTHOR, className));
         // 保存
         stringBuilder.append("\t")
                 .append(entityName)
-                .append(" save(")
+                .append(" insert(")
                 .append(entityName)
                 .append(" ")
                 .append(GeneratorUtils.firstToLowerCase(entityName))
@@ -59,11 +60,11 @@ public class ServiceGenerator extends AbstractGenerator {
         // 获取一条数据
         stringBuilder.append("\t")
                 .append(entityName)
-                .append(" getOne(")
+                .append(" selectById(")
                 .append(getIdType()[1])
                 .append(" id);\n\n");
         // 删除数据
-        stringBuilder.append("\tvoid delete(")
+        stringBuilder.append("\tvoid deleteById(")
                 .append(getIdType()[1])
                 .append(" id);\n\n");
         stringBuilder.append("}");
